@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vrolo — Team Continuity</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #1a1a1a;
+    --bg4: #222222;
+    --border: #2a2a2a;
+    --border2: #333333;
+    --teal: #00C9A7;
+    --teal-dim: rgba(0,201,167,0.12);
+    --teal-dim2: rgba(0,201,167,0.06);
+    --white: #ffffff;
+    --grey1: #999999;
+    --grey2: #666666;
+    --grey3: #444444;
+    --red: #ff5c5c;
+    --red-dim: rgba(255,92,92,0.1);
+    --yellow: #f5a623;
+    --yellow-dim: rgba(245,166,35,0.1);
+    --green: #00C9A7;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* LAYOUT */
+  .app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-text {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--teal);
+    text-transform: uppercase;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--grey2);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  .sidebar-nav {
+    padding: 16px 12px;
+    flex: 1;
+  }
+
+  .nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--grey2);
+    text-transform: uppercase;
+    padding: 0 8px;
+    margin-bottom: 6px;
+    margin-top: 16px;
+  }
+
+  .nav-label:first-child { margin-top: 0; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--grey1);
+    font-size: 13.5px;
+    font-weight: 400;
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
+  }
+
+  .nav-item:hover { background: var(--bg3); color: var(--white); }
+  .nav-item.active { background: var(--teal-dim); color: var(--teal); font-weight: 500; }
+
+  .nav-icon { width: 16px; height: 16px; opacity: 0.7; flex-shrink: 0; }
+  .nav-item.active .nav-icon { opacity: 1; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--teal);
+    color: #000;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 1px 6px;
+  }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .org-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--grey1);
+  }
+
+  .org-plan {
+    font-size: 11px;
+    color: var(--grey2);
+    margin-top: 2px;
+  }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* TOPBAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .topbar-left h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .topbar-left p {
+    font-size: 13px;
+    color: var(--grey1);
+    margin-top: 1px;
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+  .btn {
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--grey1);
+  }
+
+  .btn-ghost:hover { border-color: var(--grey2); color: var(--white); }
+
+  .btn-primary {
+    background: var(--teal);
+    color: #000;
+    font-weight: 600;
+  }
+
+  .btn-primary:hover { background: #00e0bc; }
+
+  /* CONTENT */
+  .content { padding: 28px 32px; flex: 1; }
+
+  /* VIEWS */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* TEAM GRID */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--grey1);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .member-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .member-card:hover { border-color: var(--border2); background: var(--bg3); }
+
+  .member-card.vrolo-active {
+    border-color: rgba(0,201,167,0.3);
+    background: linear-gradient(135deg, #111 0%, rgba(0,201,167,0.04) 100%);
+  }
+
+  .member-card.vrolo-active::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--teal);
+  }
+
+  .member-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .avatar-a { background: #1a3a33; color: var(--teal); }
+  .avatar-b { background: #1a2a3a; color: #6ab0ff; }
+  .avatar-c { background: #2a1a3a; color: #b06aff; }
+
+  .member-info { flex: 1; min-width: 0; }
+
+  .member-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .member-role {
+    font-size: 12px;
+    color: var(--grey1);
+    margin-top: 1px;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-active { background: rgba(0,201,167,0.12); color: var(--teal); }
+  .status-active .status-dot { background: var(--teal); }
+
+  .status-vrolo { background: rgba(0,201,167,0.15); color: var(--teal); }
+  .status-vrolo .status-dot { background: var(--teal); box-shadow: 0 0 0 3px rgba(0,201,167,0.2); }
+
+  .status-leave { background: rgba(245,166,35,0.1); color: var(--yellow); }
+  .status-leave .status-dot { background: var(--yellow); }
+
+  .member-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .stat-item { }
+  .stat-val { font-size: 16px; font-weight: 600; color: var(--white); }
+  .stat-val.teal { color: var(--teal); }
+  .stat-label { font-size: 11px; color: var(--grey2); margin-top: 1px; }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+
+  .stat-card-val {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--white);
+  }
+
+  .stat-card-label {
+    font-size: 12px;
+    color: var(--grey1);
+    margin-top: 4px;
+  }
+
+  .stat-card-delta {
+    font-size: 11px;
+    color: var(--teal);
+    margin-top: 2px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* COVERAGE PANEL */
+  .coverage-panel {
+    background: var(--bg2);
+    border: 1px solid rgba(0,201,167,0.2);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .coverage-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--teal-dim);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .coverage-text { flex: 1; }
+  .coverage-title { font-size: 14px; font-weight: 600; }
+  .coverage-sub { font-size: 13px; color: var(--grey1); margin-top: 2px; }
+
+  .coverage-action { flex-shrink: 0; }
+
+  /* INBOX VIEW */
+  .inbox-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--grey1);
+    cursor: pointer;
+    padding: 5px 0;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: color 0.15s;
+  }
+
+  .back-btn:hover { color: var(--white); }
+
+  .inbox-person {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    margin-top: 16px;
+  }
+
+  .inbox-person-info { flex: 1; }
+  .inbox-person-name { font-size: 16px; font-weight: 600; }
+  .inbox-person-role { font-size: 13px; color: var(--grey1); margin-top: 2px; }
+
+  .vrolo-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--teal-dim);
+    border: 1px solid rgba(0,201,167,0.2);
+    border-radius: 8px;
+    padding: 10px 16px;
+  }
+
+  .toggle-label { font-size: 13px; color: var(--teal); font-weight: 500; }
+
+  .toggle-switch {
+    position: relative;
+    width: 38px;
+    height: 20px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+  .toggle-track {
+    position: absolute;
+    inset: 0;
+    background: var(--teal);
+    border-radius: 20px;
+    transition: background 0.2s;
+  }
+
+  .toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 21px;
+    width: 14px;
+    height: 14px;
+    background: #000;
+    border-radius: 50%;
+    transition: left 0.2s;
+  }
+
+  .toggle-switch.off .toggle-track { background: var(--bg4); }
+  .toggle-switch.off .toggle-thumb { left: 3px; }
+
+  .tickets-list { display: flex; flex-direction: column; gap: 14px; }
+
+  .ticket-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .ticket-card:hover { border-color: var(--border2); }
+
+  .ticket-card.escalated {
+    border-color: rgba(255,92,92,0.25);
+  }
+
+  .ticket-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+
+  .ticket-from {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--bg4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--grey1);
+    flex-shrink: 0;
+  }
+
+  .ticket-meta { flex: 1; min-width: 0; }
+
+  .ticket-subject {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ticket-sender {
+    font-size: 12px;
+    color: var(--grey1);
+    margin-top: 1px;
+  }
+
+  .ticket-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .ticket-tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  .tag-handled { background: var(--teal-dim); color: var(--teal); }
+  .tag-escalated { background: var(--red-dim); color: var(--red); }
+
+  .ticket-time {
+    font-size: 11px;
+    color: var(--grey2);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .ticket-body { padding: 16px 18px; display: none; }
+  .ticket-body.open { display: block; }
+
+  .ticket-original {
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+
+  .ticket-original-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--grey2);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .ticket-original-text {
+    font-size: 13px;
+    color: var(--grey1);
+    line-height: 1.6;
+  }
+
+  .vrolo-response {
+    background: var(--teal-dim2);
+    border: 1px solid rgba(0,201,167,0.15);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+  }
+
+  .vrolo-response-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .vrolo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--teal);
+    flex-shrink: 0;
+  }
+
+  .vrolo-response-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--teal);
+    letter-spacing: 0.05em;
+  }
+
+  .vrolo-response-text {
+    font-size: 13px;
+    color: #ccc;
+    line-height: 1.65;
+  }
+
+  .ticket-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+
+  .btn-approve { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(0,201,167,0.2); }
+  .btn-approve:hover { background: rgba(0,201,167,0.2); }
+
+  .btn-edit { background: var(--bg4); color: var(--grey1); border: 1px solid var(--border); }
+  .btn-edit:hover { color: var(--white); border-color: var(--border2); }
+
+  .btn-reassign { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,92,92,0.2); }
+  .btn-reassign:hover { background: rgba(255,92,92,0.15); }
+
+  .escalation-reason {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: var(--red-dim);
+    border: 1px solid rgba(255,92,92,0.15);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+
+  .escalation-icon { color: var(--red); font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .escalation-text { font-size: 12.5px; color: #ff9090; }
+  .escalation-text strong { color: var(--red); font-weight: 600; }
+
+  /* PATTERN VIEW */
+  .pattern-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .pattern-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+
+  .pattern-card-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--grey2);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .tone-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .tone-tag {
+    background: var(--teal-dim);
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(0,201,167,0.15);
+  }
+
+  .phrase-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .phrase-item {
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 12.5px;
+    color: var(--grey1);
+    font-family: 'DM Mono', monospace;
+    border-left: 2px solid var(--teal);
+  }
+
+  .metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .metric-row:last-child { border-bottom: none; }
+
+  .metric-key { font-size: 13px; color: var(--grey1); }
+  .metric-val { font-size: 13px; font-weight: 600; color: var(--white); font-family: 'DM Mono', monospace; }
+  .metric-val.teal { color: var(--teal); }
+
+  .ticket-type-bar { display: flex; flex-direction: column; gap: 10px; }
+
+  .type-row { display: flex; flex-direction: column; gap: 4px; }
+
+  .type-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+
+  .type-label { color: var(--grey1); }
+  .type-pct { color: var(--grey2); font-family: 'DM Mono', monospace; }
+
+  .type-bar-bg {
+    height: 4px;
+    background: var(--bg4);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .type-bar-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 4px;
+    transition: width 0.6s ease;
+  }
+
+  /* ACTIVITY VIEW */
+  .activity-list { display: flex; flex-direction: column; gap: 0; }
+
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .activity-item:last-child { border-bottom: none; }
+
+  .activity-icon-wrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .ai-handled { background: var(--teal-dim); }
+  .ai-escalated { background: var(--red-dim); }
+  .ai-flagged { background: var(--yellow-dim); }
+
+  .activity-text { flex: 1; }
+  .activity-main { font-size: 13.5px; color: var(--white); }
+  .activity-sub { font-size: 12px; color: var(--grey1); margin-top: 2px; }
+  .activity-time { font-size: 11px; color: var(--grey2); font-family: 'DM Mono', monospace; white-space: nowrap; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 12px 18px;
+    font-size: 13px;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    pointer-events: none;
+    max-width: 320px;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+  /* EMPTY */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--grey2);
+    font-size: 14px;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .view.active { animation: fadeIn 0.2s ease; }
+
+  .chevron {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .chevron.open { transform: rotate(180deg); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-text">Vrolo</div>
+      <div class="logo-sub">Team Continuity</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Workspace</div>
+      <div class="nav-item active" onclick="showView('dashboard'); setActive(this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="1" y="1" width="6" height="6" rx="1.5"/>
+          <rect x="9" y="1" width="6" height="6" rx="1.5"/>
+          <rect x="1" y="9" width="6" height="6" rx="1.5"/>
+          <rect x="9" y="9" width="6" height="6" rx="1.5"/>
+        </svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="showInboxFromNav(); setActive(this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/>
+          <path d="M2 4l6 5 6-5"/>
+        </svg>
+        Inbox
+        <span class="nav-badge">3</span>
+      </div>
+      <div class="nav-label">Team</div>
+      <div class="nav-item" onclick="showView('activity'); setActive(this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M1 8h3l2-5 3 10 2-5h4"/>
+        </svg>
+        Activity Log
+      </div>
+      <div class="nav-item" onclick="showView('patterns'); setActive(this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="8" cy="8" r="6"/>
+          <path d="M8 5v3l2 2"/>
+        </svg>
+        Pattern Learning
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="org-name">Meridian Labs</div>
+      <div class="org-plan">Support Team · 6 seats</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1 id="page-title">Team Overview</h1>
+        <p id="page-sub">Monday, 14 Apr 2026</p>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost">Settings</button>
+        <button class="btn btn-primary">Add Member</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD VIEW -->
+      <div class="view active" id="view-dashboard">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-card-val">6</div>
+            <div class="stat-card-label">Total covered seats</div>
+            <div class="stat-card-delta">+1 this month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-val" style="color:var(--teal)">1</div>
+            <div class="stat-card-label">Vrolo active now</div>
+            <div class="stat-card-delta">Sarah Chen · on leave</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-val">12</div>
+            <div class="stat-card-label">Tickets handled today</div>
+            <div class="stat-card-delta">3 pending review</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-val">97%</div>
+            <div class="stat-card-label">Response accuracy</div>
+            <div class="stat-card-delta">vs Sarah's baseline</div>
+          </div>
+        </div>
+
+        <div class="coverage-panel">
+          <div class="coverage-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#00C9A7" stroke-width="1.5">
+              <circle cx="10" cy="10" r="8"/>
+              <path d="M10 6v4l3 3"/>
+            </svg>
+          </div>
+          <div class="coverage-text">
+            <div class="coverage-title">Vrolo is covering Sarah Chen</div>
+            <div class="coverage-sub">Leave started Apr 12. 3 incoming tickets handled. 1 escalation flagged for review. Coverage continues until Apr 18.</div>
+          </div>
+          <div class="coverage-action">
+            <button class="btn btn-ghost" onclick="showView('inbox'); setActivePage('Inbox', 'Sarah Chen · Vrolo coverage active')">View inbox</button>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">Support Team</div>
+        </div>
+
+        <div class="team-grid">
+          <!-- Sarah - Vrolo Active -->
+          <div class="member-card vrolo-active" onclick="showView('inbox'); setActivePage('Inbox', 'Sarah Chen · Vrolo coverage active')">
+            <div class="member-top">
+              <div class="avatar avatar-a">SC</div>
+              <div class="member-info">
+                <div class="member-name">Sarah Chen</div>
+                <div class="member-role">Support Lead</div>
+              </div>
+            </div>
+            <div><span class="status-badge status-vrolo"><span class="status-dot"></span>Vrolo Active</span></div>
+            <div class="member-stats">
+              <div class="stat-item">
+                <div class="stat-val teal">12</div>
+                <div class="stat-label">Handled by Vrolo</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-val">1</div>
+                <div class="stat-label">Escalated</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- James - Active -->
+          <div class="member-card">
+            <div class="member-top">
+              <div class="avatar avatar-b">JR</div>
+              <div class="member-info">
+                <div class="member-name">James Reyes</div>
+                <div class="member-role">Support Rep</div>
+              </div>
+            </div>
+            <div><span class="status-badge status-active"><span class="status-dot"></span>Active</span></div>
+            <div class="member-stats">
+              <div class="stat-item">
+                <div class="stat-val">94%</div>
+                <div class="stat-label">Pattern coverage</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-val">3.2h</div>
+                <div class="stat-label">Avg response</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Priya - Active -->
+          <div class="member-card">
+            <div class="member-top">
+              <div class="avatar avatar-c">PM</div>
+              <div class="member-info">
+                <div class="member-name">Priya Mehta</div>
+                <div class="member-role">Support Rep</div>
+              </div>
+            </div>
+            <div><span class="status-badge status-active"><span class="status-dot"></span>Active</span></div>
+            <div class="member-stats">
+              <div class="stat-item">
+                <div class="stat-val">88%</div>
+                <div class="stat-label">Pattern coverage</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-val">2.8h</div>
+                <div class="stat-label">Avg response</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INBOX VIEW -->
+      <div class="view" id="view-inbox">
+        <button class="back-btn" onclick="showView('dashboard'); setActivePage('Team Overview', 'Monday, 14 Apr 2026')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M10 3L5 8l5 5"/>
+          </svg>
+          Back to dashboard
+        </button>
+
+        <div class="inbox-person">
+          <div class="avatar avatar-a" style="width:44px;height:44px;font-size:16px">SC</div>
+          <div class="inbox-person-info">
+            <div class="inbox-person-name">Sarah Chen</div>
+            <div class="inbox-person-role">Support Lead · On leave Apr 12 to Apr 18</div>
+          </div>
+          <div class="vrolo-toggle">
+            <div class="toggle-label">Vrolo covering</div>
+            <label class="toggle-switch" id="toggle-sarah">
+              <input type="checkbox" checked onchange="toggleVrolo(this)">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">Incoming tickets while Sarah is out</div>
+          <div style="font-size:12px;color:var(--grey2)">3 tickets · 1 escalation</div>
+        </div>
+
+        <div class="tickets-list">
+
+          <!-- Ticket 1 - handled -->
+          <div class="ticket-card">
+            <div class="ticket-header" onclick="toggleTicket('t1')">
+              <div class="ticket-from">AT</div>
+              <div class="ticket-meta">
+                <div class="ticket-subject">Login issue after password reset</div>
+                <div class="ticket-sender">Alex Torres · Brightfield Inc.</div>
+              </div>
+              <div class="ticket-right">
+                <span class="ticket-tag tag-handled">Handled by Vrolo</span>
+                <span class="ticket-time">9:14 AM</span>
+                <svg class="chevron" id="chev-t1" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+              </div>
+            </div>
+            <div class="ticket-body" id="body-t1">
+              <div class="ticket-original">
+                <div class="ticket-original-label">Customer message</div>
+                <div class="ticket-original-text">Hi, I reset my password earlier today but I still can't log in. It keeps saying my credentials are incorrect. I've tried three times now. Can you help?</div>
+              </div>
+              <div class="vrolo-response">
+                <div class="vrolo-response-header">
+                  <div class="vrolo-dot"></div>
+                  <div class="vrolo-response-label">Vrolo response (Sarah's style)</div>
+                </div>
+                <div class="vrolo-response-text">Hi Alex, thanks for reaching out. Password reset issues like this usually happen when there's a cached session interfering with the new credentials. Please try clearing your browser cache or opening the login page in a private window. If that doesn't work, I can trigger a fresh reset from our end. Let me know how it goes.</div>
+              </div>
+              <div class="ticket-actions">
+                <button class="btn-sm btn-approve" onclick="approveTicket('t1')">Approve and send</button>
+                <button class="btn-sm btn-edit">Edit response</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ticket 2 - escalated -->
+          <div class="ticket-card escalated">
+            <div class="ticket-header" onclick="toggleTicket('t2')">
+              <div class="ticket-from">MK</div>
+              <div class="ticket-meta">
+                <div class="ticket-subject">Refund request for annual subscription</div>
+                <div class="ticket-sender">Maya Kim · Sunstone Co.</div>
+              </div>
+              <div class="ticket-right">
+                <span class="ticket-tag tag-escalated">Escalated</span>
+                <span class="ticket-time">10:32 AM</span>
+                <svg class="chevron" id="chev-t2" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+              </div>
+            </div>
+            <div class="ticket-body" id="body-t2">
+              <div class="escalation-reason">
+                <div class="escalation-icon">!</div>
+                <div class="escalation-text"><strong>Escalated:</strong> Refund amount is $840, which is above Sarah's approved threshold of $500. Requires manager approval before processing.</div>
+              </div>
+              <div class="ticket-original">
+                <div class="ticket-original-label">Customer message</div>
+                <div class="ticket-original-text">We signed up for the annual plan 6 weeks ago but our team ended up not using the product. I'd like a full refund of the $840 we paid. We weren't aware of the no-refund policy when we signed up.</div>
+              </div>
+              <div class="vrolo-response">
+                <div class="vrolo-response-header">
+                  <div class="vrolo-dot"></div>
+                  <div class="vrolo-response-label">Vrolo draft (held for approval)</div>
+                </div>
+                <div class="vrolo-response-text">Hi Maya, thanks for getting in touch. I completely understand the frustration when a product doesn't fit your team's workflow. I've noted your request and flagged it for a member of our team who can review refund approvals at this level. You'll hear back within one business day. I appreciate your patience.</div>
+              </div>
+              <div class="ticket-actions">
+                <button class="btn-sm btn-approve" onclick="approveTicket('t2')">Approve and send</button>
+                <button class="btn-sm btn-reassign" onclick="showToast('Ticket reassigned to James Reyes')">Reassign</button>
+                <button class="btn-sm btn-edit">Edit response</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ticket 3 - handled -->
+          <div class="ticket-card">
+            <div class="ticket-header" onclick="toggleTicket('t3')">
+              <div class="ticket-from">DS</div>
+              <div class="ticket-meta">
+                <div class="ticket-subject">How do I export data to CSV?</div>
+                <div class="ticket-sender">Daniel Sousa · Pinecrest Digital</div>
+              </div>
+              <div class="ticket-right">
+                <span class="ticket-tag tag-handled">Handled by Vrolo</span>
+                <span class="ticket-time">11:05 AM</span>
+                <svg class="chevron" id="chev-t3" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+              </div>
+            </div>
+            <div class="ticket-body" id="body-t3">
+              <div class="ticket-original">
+                <div class="ticket-original-label">Customer message</div>
+                <div class="ticket-original-text">Quick question: is there a way to export our ticket history as a CSV? We're trying to do some reporting and need the raw data.</div>
+              </div>
+              <div class="vrolo-response">
+                <div class="vrolo-response-header">
+                  <div class="vrolo-dot"></div>
+                  <div class="vrolo-response-label">Vrolo response (Sarah's style)</div>
+                </div>
+                <div class="vrolo-response-text">Hi Daniel, yes absolutely. Head to Settings, then Data and Exports, and you'll find the CSV export option there. You can filter by date range and ticket status before exporting. If you run into any issues or need a custom date range that isn't showing, just let me know and I'll sort it out for you.</div>
+              </div>
+              <div class="ticket-actions">
+                <button class="btn-sm btn-approve" onclick="approveTicket('t3')">Approve and send</button>
+                <button class="btn-sm btn-edit">Edit response</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- PATTERNS VIEW -->
+      <div class="view" id="view-patterns">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+          <div class="avatar avatar-a">SC</div>
+          <div>
+            <div style="font-size:16px;font-weight:600">Sarah Chen</div>
+            <div style="font-size:13px;color:var(--grey1)">Pattern profile · built from 847 past responses</div>
+          </div>
+        </div>
+
+        <div class="pattern-grid">
+          <div class="pattern-card">
+            <div class="pattern-card-title">Communication tone</div>
+            <div class="tone-tags">
+              <span class="tone-tag">Warm</span>
+              <span class="tone-tag">Concise</span>
+              <span class="tone-tag">Solution-first</span>
+              <span class="tone-tag">No jargon</span>
+              <span class="tone-tag">Empathetic</span>
+            </div>
+          </div>
+
+          <div class="pattern-card">
+            <div class="pattern-card-title">Response metrics</div>
+            <div class="metric-row">
+              <span class="metric-key">Avg response time</span>
+              <span class="metric-val teal">2.4 hrs</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-key">Avg response length</span>
+              <span class="metric-val">68 words</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-key">CSAT score</span>
+              <span class="metric-val teal">4.8 / 5.0</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-key">Escalation rate</span>
+              <span class="metric-val">6.2%</span>
+            </div>
+          </div>
+
+          <div class="pattern-card">
+            <div class="pattern-card-title">Common phrases</div>
+            <div class="phrase-list">
+              <div class="phrase-item">"let me know how it goes"</div>
+              <div class="phrase-item">"I'll sort it out for you"</div>
+              <div class="phrase-item">"thanks for reaching out"</div>
+              <div class="phrase-item">"just let me know"</div>
+            </div>
+          </div>
+
+          <div class="pattern-card">
+            <div class="pattern-card-title">Ticket type distribution</div>
+            <div class="ticket-type-bar">
+              <div class="type-row">
+                <div class="type-label-row"><span class="type-label">Technical issues</span><span class="type-pct">38%</span></div>
+                <div class="type-bar-bg"><div class="type-bar-fill" style="width:38%"></div></div>
+              </div>
+              <div class="type-row">
+                <div class="type-label-row"><span class="type-label">Billing and refunds</span><span class="type-pct">24%</span></div>
+                <div class="type-bar-bg"><div class="type-bar-fill" style="width:24%"></div></div>
+              </div>
+              <div class="type-row">
+                <div class="type-label-row"><span class="type-label">How-to questions</span><span class="type-pct">21%</span></div>
+                <div class="type-bar-bg"><div class="type-bar-fill" style="width:21%"></div></div>
+              </div>
+              <div class="type-row">
+                <div class="type-label-row"><span class="type-label">Account access</span><span class="type-pct">17%</span></div>
+                <div class="type-bar-bg"><div class="type-bar-fill" style="width:17%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY VIEW -->
+      <div class="view" id="view-activity">
+        <div class="section-header" style="margin-bottom:0">
+          <div class="section-title">Today · Apr 14, 2026</div>
+          <div style="font-size:12px;color:var(--grey2)">15 events</div>
+        </div>
+
+        <div class="activity-list" style="margin-top:16px">
+
+          <div class="activity-item">
+            <div class="activity-icon-wrap ai-handled">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#00C9A7" stroke-width="1.5">
+                <path d="M2 7l3 3 7-6"/>
+              </svg>
+            </div>
+            <div class="activity-text">
+              <div class="activity-main">Vrolo handled ticket from Daniel Sousa (CSV export question)</div>
+              <div class="activity-sub">Sarah Chen · response sent · pending approval</div>
+            </div>
+            <div class="activity-time">11:05 AM</div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-icon-wrap ai-escalated">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#ff5c5c" stroke-width="1.5">
+                <path d="M7 2v6M7 10v1"/>
+              </svg>
+            </div>
+            <div class="activity-text">
+              <div class="activity-main">Ticket escalated: Maya Kim refund request ($840)</div>
+              <div class="activity-sub">Sarah Chen · above approval threshold · awaiting manager review</div>
+            </div>
+            <div class="activity-time">10:32 AM</div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-icon-wrap ai-handled">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#00C9A7" stroke-width="1.5">
+                <path d="M2 7l3 3 7-6"/>
+              </svg>
+            </div>
+            <div class="activity-text">
+              <div class="activity-main">Vrolo handled ticket from Alex Torres (login issue)</div>
+              <div class="activity-sub">Sarah Chen · response sent · pending approval</div>
+            </div>
+            <div class="activity-time">9:14 AM</div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-icon-wrap ai-flagged">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#f5a623" stroke-width="1.5">
+                <path d="M2 2l10 5-10 5V2z"/>
+              </svg>
+            </div>
+            <div class="activity-text">
+              <div class="activity-main">Vrolo coverage activated for Sarah Chen</div>
+              <div class="activity-sub">Leave period: Apr 12 to Apr 18 · auto-activated on schedule</div>
+            </div>
+            <div class="activity-time">Apr 12, 8:00 AM</div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-icon-wrap ai-handled">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#00C9A7" stroke-width="1.5">
+                <path d="M2 7l3 3 7-6"/>
+              </svg>
+            </div>
+            <div class="activity-text">
+              <div class="activity-main">Pattern model updated for Sarah Chen</div>
+              <div class="activity-sub">847 responses processed · tone and phrase patterns refreshed</div>
+            </div>
+            <div class="activity-time">Apr 11, 6:00 PM</div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-icon-wrap ai-handled">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#00C9A7" stroke-width="1.5">
+                <path d="M2 7l3 3 7-6"/>
+              </svg>
+            </div>
+            <div class="activity-text">
+              <div class="activity-main">James Reyes coverage model reached 94% confidence</div>
+              <div class="activity-sub">Ready for activation · no action needed</div>
+            </div>
+            <div class="activity-time">Apr 10, 2:15 PM</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toast-msg">Done.</span>
+</div>
+
+<script>
+  function showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + id).classList.add('active');
+  }
+
+  function setActive(el) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function setActivePage(title, sub) {
+    document.getElementById('page-title').textContent = title;
+    document.getElementById('page-sub').textContent = sub;
+  }
+
+  function showInboxFromNav() {
+    showView('inbox');
+    setActivePage('Inbox', 'Sarah Chen · Vrolo coverage active');
+  }
+
+  function toggleTicket(id) {
+    const body = document.getElementById('body-' + id);
+    const chev = document.getElementById('chev-' + id);
+    const isOpen = body.classList.contains('open');
+    document.querySelectorAll('.ticket-body').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.chevron').forEach(c => c.classList.remove('open'));
+    if (!isOpen) {
+      body.classList.add('open');
+      chev.classList.add('open');
+    }
+  }
+
+  function approveTicket(id) {
+    const body = document.getElementById('body-' + id);
+    const card = body.closest('.ticket-card');
+    const tag = card.querySelector('.ticket-tag');
+    tag.className = 'ticket-tag tag-handled';
+    tag.textContent = 'Sent';
+    card.classList.remove('escalated');
+    body.classList.remove('open');
+    document.getElementById('chev-' + id).classList.remove('open');
+    showToast('Response approved and sent to customer');
+  }
+
+  function toggleVrolo(checkbox) {
+    const sw = document.getElementById('toggle-sarah');
+    if (checkbox.checked) {
+      sw.classList.remove('off');
+      showToast('Vrolo coverage activated for Sarah Chen');
+    } else {
+      sw.classList.add('off');
+      showToast('Vrolo coverage paused');
+    }
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // Open first ticket by default
+  setTimeout(() => toggleTicket('t2'), 400);
+</script>
+
+</body>
+</html>
